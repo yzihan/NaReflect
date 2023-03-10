@@ -1,0 +1,251 @@
+html {
+  overscroll-behavior: none
+}
+.App {
+  text-align: center;
+  display: flex;
+  width: 1250px;
+  height:600px;
+  overflow-x: scroll;
+  overflow-y: scroll;
+  background-image: url('./components/background.jpeg');
+  background-position: top;
+  min-height: 100vh;
+  background-size:1250px, auto;
+  justify-content: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  font-family: 'Zen Old Mincho';
+  font-style: normal;
+  font-weight: 400;
+  text-align: left;
+  letter-spacing: 0em;
+}
+
+.input-container {
+  text-align: center;
+  width: 1100px;
+  min-height: 700px;
+  !border: 3px solid #73AD21;
+}
+
+.column {
+  float: left;
+  text-align: left;
+}
+.row:after {
+  display: table;
+  clear: both;
+  padding: 40px;
+}
+
+.h1, .h2-light, .h2-dark, .h3-light, .input-title, .input-box, .input-box-large, .input-text, .dropdown, .button-light, .button-dark, .image-box {
+  font-family: 'Zen Old Mincho';
+  font-style: normal;
+  font-weight: 400;
+  text-align: left;
+  letter-spacing: 0em;
+}
+
+.login-form, .register-form {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(187, 189, 207, 0.8);
+  border-radius: 40px;
+  padding: 4rem;
+  margin-top:100px;
+}
+
+.desc-form, .inte-form {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 40px;
+  padding: 2rem;
+  width: 1100px;
+  margin-top: 160px;
+}
+
+
+.dream-file{
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 1.0);
+  border-radius: 15px;
+  width: 185px;
+  height: 180px;
+  margin-left: 18px;
+  margin-right: 18px;
+  margin-top:23px;
+  margin-bottom:0px;
+  padding: 10px;
+}
+.image-box {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 1.0);
+  border-radius: 15px;
+  width: 110px;
+  height: 110px;
+  margin: 20px;
+  padding: 0px;
+}
+.login-form, .register-form {
+  position: absolute;
+  right: 10%;
+  text-align: center;
+}
+
+.vspace {
+  margin-top:10px;
+}
+.hspace {
+  margin-left:10px;
+}
+
+.h1 {
+  font-size: 60px;
+  line-height: 87px;
+  -webkit-text-stroke: 1px;
+  color: #FFFFFF;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
+  margin: 15px;
+}
+
+.h2-light, .h2-dark {
+  margin: 30px;
+  padding: 0.5rem;
+}
+.h2-light {
+  font-size: 28px;
+  color: #FFFFFF;
+}
+.h2-dark {
+  font-size: 28px;
+  color: #777777;
+}
+.input-title {
+  font-size: 24px;
+  color: #000000;
+  margin-left: 10px;
+}
+.input-text {
+  font-size: 20px;
+  color: #000000;
+  margin-left: 10px;
+  margin-bottom: 30px;
+}
+
+.h3-light {
+  color: #FFFFFF;
+  font-size: 32px;
+  padding: 5px;
+  border-bottom: solid #FFFFFF;
+  margin-top: 50px;
+  position: absolute;
+  -webkit-text-stroke: 0.7px;
+  color: #FFFFFF;
+  text-shadow: 0px 2px 2px rgba(0, 0, 0, 1);
+}
+.input-box, .input-box-large {
+  margin: 10px;
+  border-radius: 15px;
+  padding: 15px;
+  font-size: 24px;
+  text-align: justify;
+  color: #000000;
+  border: 1px solid #000000;
+}
+.input-box {
+  width: 300px;
+  height: 55px;
+}
+.input-box-large {
+  width: 1000px;
+  height: 250px;
+}
+.dropdown {
+  margin: 10px;
+  padding-left: 15px;
+  font-size: 24px;
+  line-height: 35px;
+  text-align: left;
+  text-transform: translate(-50%, 0);
+  color: #000000;
+  width: 300px;
+  height: 55px;
+  border-radius: 15px;
+  border: 1px solid #000000;
+  margin-left: 60px;
+}
+.button-light, .button-dark {
+  width: 145px;
+  height: 40px;
+  opacity: 1.0;
+  border-radius: 15px;
+  border: None;
+  font-size: 26px;
+  text-align: center;
+
+  margin-top: 10px;
+  margin-bottom: 10px;
+  position: relative;
+  left: 50%;
+  transform: translate(-50%, 0);
+}
+
+.button-dark {
+  background: #606060;
+  color: #FFFFFF;
+}
+.button-light {
+  background: #A6A6B3;
+  color: #FFFFFF;
+}
+.button-dark:hover {
+  background: #404040;
+}
+.button-light:hover {
+  background: #9090A0;
+}
+
+button {
+  background-color: rgba(0,0,0,0);
+  border: None;
+}
+
+.react-horizontal-scrolling-menu--item:first-child {
+  margin-left: 50px;
+}
+.react-horizontal-scrolling-menu--scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.react-horizontal-scrolling-menu--scroll-container {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.react-horizontal-scrolling-menu--wrapper {
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.react-horizontal-scrolling-menu--scroll-container {
+  flex-basis: 100%;
+  flex-shrink: 0;
+}
+
+/* Change position of container so arrows will be at top/bottom */
+.react-horizontal-scrolling-menu--scroll-container {
+  order: -1; /* order: 1; for top position */
+}
+
+
+* {
+  box-sizing: border-box;
+}
+
