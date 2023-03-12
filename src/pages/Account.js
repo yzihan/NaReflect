@@ -13,10 +13,10 @@ import edit from '../components/pencil.png';
 import man from '../components/man.jpg';
 
 
-const Account = (props) => {
+const Account = () => {
     const items=['Item 1', 'Item 2', 'Item 3'];
-    const dream_titles = ['Party', 'No bustle', 'Bitten'];
-    const dream_descriptions = ['I find myself on a beach, with many beachfront mansions nearby. My friends and I decide we ...',
+    const titles = ['Party', 'No bustle', 'Bitten'];
+    const descriptions = ['I find myself on a beach, with many beachfront mansions nearby. My friends and I decide we ...',
                                 'In my dream, as usual, I woke up early. I had breakfast. I came out of the door with ...',
                                 'It was like the zombie apocalypse but slower, calmer. Everyone was sequestered into ...'];
     const [names, setNames] = useState(['']);
@@ -72,7 +72,7 @@ const Account = (props) => {
         setImgAfterCrops(newImgAfterCrops);
         //alert('oncropdone:'+currentPage)
         setCurrentPage(-1);
-        
+
         };
     };
 
@@ -89,7 +89,7 @@ const Account = (props) => {
         if (e && e.length > 0) {
         const reader = new FileReader();
         reader.readAsDataURL(e[0]);
-        
+
         reader.onload = function () {
             onImageSelected(reader.result, itemId);
         };
@@ -101,11 +101,11 @@ const Account = (props) => {
     };
 
     const addChar = () => {
-        
+
         setNames([...names, '']);
         setImages([...images, '']);
         setImgAfterCrops([...imgAfterCrops, '']);
-        
+
     }
 
 
@@ -116,20 +116,21 @@ const Account = (props) => {
     }
 
 
-    const DreamCard = ({itemId}) => {
+    const Card = ({itemId}) => {
         //alert('id:'+id.target);
         //const itemId = '0';
-        //alert(dream_titles[itemId]);
+        //alert(titles[itemId]);
 
         return (
             <div className='column' style={{minHeight:'60px', width:'30%', textAlign:'left',}}>
-                <form className='dream-file' >
-                    <text className='input-title' style={{textAlign:'left'}}>{dream_titles[itemId]}</text>
-                    <img src={edit} style={{width:'22%', height:'22%', opacity:'80%', backgroundColor:'rgba(0,0,0,0.2)', borderRadius:'10px', padding:'3px', transform:'translate(120px,-25px)'}}/>
-                    <text className='input-text' style={{textAlign:'left', marginTop:'-15px', fontSize:'18px', color:'#777777', lineHeight:'115%'}}>{dream_descriptions[itemId]}</text>
-                    
-                    
-                </form>
+                <div className='file' >
+                    <text className='input-title' style={{textAlign:'left'}}>{titles[itemId]}</text>
+                    <div style={{width: '100%'}}>
+                        <img src={edit} className='icon'/>
+                        <img src={video} className='icon'/>
+                    </div>
+                    <text className='input-text' style={{textAlign:'left', marginTop:'-15px', fontSize:'18px', color:'#777777', lineHeight:'115%'}}>{descriptions[itemId]}</text>
+                </div>
             </div>
         );
     }
@@ -137,7 +138,7 @@ const Account = (props) => {
     const CharCard = ({itemId}) => {
         return (
             <div class='row' style={{textAlign:'center', }}>
-                <form className='dream-file' style={{height:'110px', width:'110px'}}>
+                <form className='file' style={{height:'110px', width:'110px'}}>
                 </form>
                 <text className='input-title' style={{color:'#FFFFFF'}}>Char {itemId}</text>
             </div>
@@ -173,45 +174,34 @@ const Account = (props) => {
     return (
         <div className='input-container' style={{textAlign:'left'}}>
             <div className='column' style={{width:'50%', textAlign:'left', }} onSubmit={handleSubmit}>
-                <div className='header' style={{position:'fixed', width:'1100px'}} >
-                    <label className='h3-light'>Want to have a new dream journey?</label>
-                    <button className='button-light' onClick={() => navigate("/description")} style={{position: 'relative', left: '70px', top: '120px'}}>Start</button>
-                    <button className='button-light' onClick={() => navigate("/login")} style={{position: 'relative', left: '70px', top: '120px', marginLeft:'30px'}}>Logout</button>
-                </div>
-
-                <div class='inte-form' style={{height:'500px', width:'500px', marginTop:'250px', marginBottom:'100px', overflow:'scroll'}}>
-                <label className='input title' style={{textAlign:'center', fontSize:'30px'}}>Dream Gallery.</label>
-                <div class='row' style={{textAlign:'left', }}>
+                <div className='inte-form' style={{height:'500px', width:'500px', marginTop:'250px', marginBottom:'100px', overflow:'scroll'}}>
+                <label className='input title' style={{textAlign:'center', fontSize:'30px'}}>Gallery.</label>
+                <div className='row' style={{textAlign:'left' }}>
                     {items.map((item, index) => (
-                       
-                        <div className='column' style={{minHeight:'60px', width:'50%', textAlign:'left',}}>{DreamCard( {itemId:index}) }</div>
-                       
+                        <div className='column' style={{minHeight:'60px', width:'50%', textAlign:'left',}}>{Card( {itemId:index}) }</div>
                     ))}
                      </div>
                 </div>
             </div>
-
-            <div  className='column' style={{width:'50%', textAlign:'right', transform:'translate(9%, 0)'}} onSubmit={handleSubmit}>
-            
-            <div class='inte-form' style={{background: 'rgba(0,0,0, 0.5)', height:'700px', width:'500px', paddingTop:'20px', marginTop:'50px', marginBottom:'100px', overflow:'scroll'}}>
-            <label className='input title' style={{textAlign:'center', fontSize:'30px', color:'#FFFFFF', marginBottom:'20px'}}>Character Portraits.</label>
-                <div class='row'>
-                    {names.map((item, index) => (
-                        <div className='column' style={{minHeight:'60px', width:'33%', textAlign:'left',}}>{CharImgCard( {itemId:index}) }</div>
-                    ))}
+            <div className='column' style={{width:'50%', textAlign:'right', transform:'translate(9%, 0)'}} onSubmit={handleSubmit}>
+                <div class='inte-form' style={{background: 'rgba(0,0,0, 0.5)', height:'700px', width:'500px', paddingTop:'20px', marginTop:'50px', marginBottom:'100px', overflow:'scroll'}}>
+                    <label className='input title' style={{textAlign:'center', fontSize:'30px', color:'#FFFFFF', marginBottom:'20px'}}>Character Portraits.</label>
+                        <div class='row'>
+                            {names.map((item, index) => (
+                                <div className='column' style={{minHeight:'60px', width:'33%', textAlign:'left',}}>{CharImgCard( {itemId:index}) }</div>
+                            ))}
+                        </div>
+                        {currentPage !== -1 ? (
+                            <div className="input-container" style={{position:'absolute', height:'650px', width:'450px', marginTop:'100px', marginBottom:'100px',textAlign:'center', transform:'translate(-2%, -12%)'}}>
+                            <ImageCropper
+                            image={images[currentPage]}
+                            onCropDone={(e) => onCropDone(e, currentPage)}
+                            onCropCancel={(e) => onCropCancel(currentPage)}
+                            />
+                            </div>
+                        ):(<></>) }
+                        {currentPage === -1 ?(<button type='button' className='button-light' onClick={() => addChar()} style={{position: 'absolute', left: '40%', top: '75%', marginLeft:'30px'}}>Add</button>):(<></>)}
                 </div>
-                {currentPage !== -1 ? (
-                    <div className="input-container" style={{position:'absolute', height:'650px', width:'450px', marginTop:'100px', marginBottom:'100px',textAlign:'center', transform:'translate(-2%, -12%)'}}>
-                    <ImageCropper
-                    image={images[currentPage]}
-                    onCropDone={(e) => onCropDone(e, currentPage)}
-                    onCropCancel={(e) => onCropCancel(currentPage)}
-                    />
-                    </div>
-                ):(<></>) }
-                {currentPage === -1 ?(<button type='button' className='button-light' onClick={() => addChar()} style={{position: 'absolute', left: '40%', top: '75%', marginLeft:'30px'}}>Add</button>):(<></>)}
-            </div>
-
             </div>
         </div>
     );

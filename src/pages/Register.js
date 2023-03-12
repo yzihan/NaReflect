@@ -27,10 +27,12 @@ const Register = (props) => {
             //alert('get user:'+window.sessionStorage.getItem('user_name'));
             if (response.res === false) {alert('[Error] '+response.message);}
             else {
+                console.log(response)
                 window.sessionStorage.setItem('user_name', user);
-                window.sessionStorage.setItem('dream_title', '');
-                window.sessionStorage.setItem('dream_style', 'real photo high resolution');
-                window.sessionStorage.setItem('dream_desc', '');
+                window.sessionStorage.setItem('user_id', response.id);
+                window.sessionStorage.setItem('title', '');
+                window.sessionStorage.setItem('style', 'real photo high resolution');
+                window.sessionStorage.setItem('desc', '');
                 navigate('/account');
             }
           })
@@ -39,7 +41,7 @@ const Register = (props) => {
     return (
         <div className='auth-form-container' onSubmit={handleSubmit}>
             <form className='register-form' >
-            <label className='h1' style={{textAlign:'center'}}>DreamVz</label>
+            <label className='h1' style={{textAlign:'center'}}>NaReflect</label>
                 <div >
                     <button className='h2-dark' onClick={() => navigate("/login")}>Login</button>
                     <label className='hspace'></label>
@@ -49,7 +51,7 @@ const Register = (props) => {
                 <input className='input-box' value={user} onChange={e => setUser(e.target.value)} type='user' placeholder='Your name' id='user' name='user' />
                 <input className='input-box' value={pass} onChange={e => setPass(e.target.value)} type='password' placeholder='Your password' id='password' name='password' />
                 <label className='vspace'> </label>
-                
+
                 <button className='button-dark' type='submit'>Start</button>
             </form>
         </div>

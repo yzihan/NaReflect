@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import pandas as pd
-import ast
 import time
+import os
+import polars as pl
 
 CACHE = [] # A list storing the most recent 5 reframing history
 MAX_STORE = 5 # The maximum number of history user would like to store
@@ -24,17 +24,18 @@ def test(input_text):
     CACHE = update_cache(CACHE, [input_text])
     return 'Input: '+input_text
 
-import os
-import polars as pl
+
 def login_ret(df, name, password):
-    #print(password, password.type)
-    print(len(df.filter(pl.col('password')==str(password))))
     if len(df.filter((pl.col('name')==name) & (pl.col('password')==password))) > 0:
-        return jsonify({'res':True, 'message':'Welcome back, '+name+'!'})
+        user_id = df.filter((pl.col('name')==name) & (pl.col('password')==password))['id'][0]
+        return jsonify({'res':True, 'message':'Welcome back, '+name+'!', 'id': user_id})
     elif len(df.filter(pl.col('name')==name)) > 0:
         return jsonify({'res':False, 'message':'Incorrect password!'})
     else:
         return jsonify({'res':False, 'message':'Account does not exist! Please register.'})
+
+def upload_pic_ret():
+    return jsonify({'res': True, 'message': 'Successfully upload!'})
 
 def register_ret(df, df_path, email, name, password):
     if len(df.filter(pl.col('email')==email)) > 0:
@@ -44,10 +45,11 @@ def register_ret(df, df_path, email, name, password):
     elif len(name)==0 or name.find(' ') != -1 or name[0].isnumeric():
         return jsonify({'res':False, 'message':'Invalid name! Please do not include space or use number as the first letter.'})
     else:
-        df_new = pl.DataFrame({'email':[email], 'name':[name], 'password':[password]})
+        id = df.height
+        df_new = pl.DataFrame({'id':id, 'email':[email], 'name':[name], 'password':[password]})
         df = df.extend(df_new)
         df.write_csv(df_path)
-        return jsonify({'res':True, 'message':'Welcome, '+name+'!'})
+        return jsonify({'res':True, 'message':'Welcome, '+name+'!', 'id': id})
 
 def desc_ret(name, path, title, style, desc):
     path = os.path.join(path, name)
@@ -60,41 +62,31 @@ def desc_ret(name, path, title, style, desc):
     desc = desc.replace('\n','')
     desc += '.' if desc[-1] != '.' else ''
     time.sleep(3);
-    # TODO: interpretation
-    return jsonify({'res':True, 'folder':folder, 'title':title, 'style':style, 'desc':desc, 
-        'sentences': ['This morning I had breakfast with my dad in the kitchen, with sunbeams streaming through the large windows. I was excited that I can finally go to the art museum with my friends Alice and Bella. ',
-                      'Suddenly, it started raining outside. I went to the old train station nearby to wait for the train to go to the museum.',
-                      'I was all wet when I arrived, but I didn’t care because I saw Alice and Bella waiting for me in the spacious halls of the art museum, with exquisite European oil paintings in golden ornate frames on the walls.',
-                      'I forgot all about the weather, and we spent a lovely afternoon immersing in the beautiful paintings.'], 
-        'chars':['My dad', '', 'Alice; Bella', ''], 
-        'scenes':['scene1','s2','s3','s4'],
-        'acts':['had breakfast in the kitchen, with sunbeams streaming through the large windows.', 
-                'raining outside; went to the old train station nearby to wait for the train.', 
-                'the spacious halls of the art museum, with exquisite European oil paintings in golden ornate frames on the walls.', 
-                'immersing in the beautiful paintings.']})
-    
+    return jsonify({'res':True})
+
+
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 df_path = 'user_database.csv'
 user_path = 'user_info/'
 os.makedirs(user_path, exist_ok=True)
 if not os.path.exists(df_path):
-    df = pl.DataFrame({'email':['tester@gmail.com'], 'name':['tester'], 'password':['tester']})
+    df = pl.DataFrame({'id':0, 'email':['tester@gmail.com'], 'name':['tester'], 'password':['tester']})
     df.write_csv(df_path)
 else:
     df = pl.read_csv(df_path)
     if len(df) <= 1:
-        df = pl.DataFrame({'email':['tester@gmail.com'], 'name':['tester'], 'password':['tester']})
-print(df)
+        df = pl.DataFrame({'id':0, 'email':['tester@gmail.com'], 'name':['tester'], 'password':['tester']})
+
 app = Flask(__name__)
 CORS(app, resources=r'/*')
 with app.app_context():
-    @app.route('/login/', methods=['GET', 'POST'])
+    @app.route('/login/', methods=['POST'])
     def login():
         if request.method == 'POST':
             content = request.get_json()
-            print(content)
             return login_ret(df, content['user'], content['password'])
-    @app.route('/register/', methods=['GET', 'POST'])
+    @app.route('/register/', methods=['POST'])
     def register():
         if request.method == 'POST':
             content = request.get_json()
@@ -104,9 +96,27 @@ with app.app_context():
         if request.method == 'POST':
             content = request.get_json()
             return desc_ret(content['user'], user_path, content['title'], content['style'], content['desc'])
-    
-    
-        
+    @app.route('/history/', methods=['GET'])
+    def history():
+        if request.method == 'GET':
+            request.args.get('')
+
+    @app.route('/upload_photo/', methods=['POST','GET'])
+    def up_photo():
+        print(request.form)
+        print(request.files)
+        img = request.files['file']
+        username = request.form.get('username')
+        path = basedir + '\\user_info\\'
+        file_path = path + username + '\\'+ img.filename
+        with open(file_path, mode='a', encoding='utf-8') as file:
+            print(file_path)
+            img.save(file_path)
+            return jsonify({
+                'res': 'success'
+            })
+
+
 
     #res = app.test_client().post('/login', json={'user':'mm','password':'123'})
     #print(res)
@@ -114,6 +124,9 @@ with app.app_context():
 
 if __name__ == '__main__':
     app.run(debug=True, port=3001)
-    
+
     #app.test_client().get('/login', query_string='get')
     print('main')
+
+
+

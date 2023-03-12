@@ -1,40 +1,61 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import React, { useState } from "react";
-var connect_config = require('../config.json');
+import profile from '../components/profile.png';
+import Character from "./characters";
 
 
 
 const Interpretation = (props) => {
-    
     //const [items] = React.useState(getItems);
     //const scenes = ['scene1','s2','s3','s4']
-    //alert(JSON.parse(window.sessionStorage.getItem('dream_chars'))[2])
-    //alert(JSON.parse(window.sessionStorage.getItem('dream_chars'))[3])
+
+    const [isMapping, setMapping] = useState(false)
+
+    const mapping = ()=>{
+        setMapping(true)
+    }
+
     const newChars = [];
-    const initChars = JSON.parse(window.sessionStorage.getItem('dream_chars'));
-    for (let i=0;i<initChars.length;i++) { var char = initChars[i].split('; '); newChars.push(char.map((s,i) => {return s;})); }
+    const initChars = JSON.parse(window.sessionStorage.getItem('chars'));
+    for (let i=0;i<initChars.length;i++) {
+        var char = initChars[i].split('; ');
+        newChars.push(char.map((s,i) => {return s;}));
+    }
+
     const newActs = [];
-    var initActs = JSON.parse(window.sessionStorage.getItem('dream_acts'));
-    for (let i=0;i<initActs.length;i++) { var act = initActs[i].split('; '); newActs.push(act);}
-    const [sentences, setSentences] = useState(JSON.parse(window.sessionStorage.getItem('dream_sentences')));
+    var initActs = JSON.parse(window.sessionStorage.getItem('acts'));
+    for (let i=0;i<initActs.length;i++) {
+        var act = initActs[i].split('; ');
+        newActs.push(act);
+    }
+
+    const [sentences, setSentences] = useState(JSON.parse(window.sessionStorage.getItem('sentences')));
     const [chars, setChars] = useState(newChars);
-    const [scenes, setScenes] = useState(JSON.parse(window.sessionStorage.getItem('dream_scenes')));
+    const [scenes, setScenes] = useState(JSON.parse(window.sessionStorage.getItem('scenes')));
     const [acts, setActs] = useState(newActs);
     const navigate = useNavigate();
-    const sceneStates = [];
-    for (let i=0;i<4;i++) {
-    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
         alert('output'+e);
     }
-    
     function handleMerge(itemId) {
-        chars.splice(itemId+1, 1);
+
+        if(itemId==chars.length-1){
+            return
+        }
+
+        const newChars = chars
+        for(let character of chars[itemId+1]){
+            newChars[itemId].push(character)
+        }
+        newChars.splice(itemId+1, 1);
+        setChars(newChars)
+
         const newActs = acts.map((s,i) => {if(i===itemId){return s+' '+acts[i+1];}else{return s;}});
         newActs.splice(itemId+1, 1);
         setActs(newActs);
+
         scenes.splice(itemId+1, 1);
         const newSentences = sentences.map((s,i) => {if(i===itemId){return s+' '+sentences[i+1];}else{return s;}});
         newSentences.splice(itemId+1, 1);
@@ -75,36 +96,29 @@ const Interpretation = (props) => {
 
         return (
             <div style={{width:'10%'}}>
-                <form className='desc-form' style={{minHeight:'120px', marginTop:'0px'}}>
-                <div class='row'>
-                    <div class='column' style={{width:'80%'}}>
-                    <text className='input-text' style={{textAlign:'left', fontSize:'22px'}}>{sentences[itemId]}</text>
-                    {itemId < 3 ? <text className='input-text' style={{textAlign:'left', color:'#777777', fontSize:'22px'}}>{sentences[itemId+1]}</text>:<text></text>}
-                    </div>
-                    <div class='column' style={{width:'10%'}}>
-                    {
-                        itemId < 3 ? <button className='button-dark' type='button' onClick = {(e) => handleMerge(itemId)} style={{position: 'relative', left: '90%', top: '0px'}}>Merge</button> : <></>
-                    }
-                    
-                    {/*<button className='button-dark' type='button' onClick = {(e) => handleAdd(itemId)} style={{position: 'relative', left: '90%', top: '-10px'}}>Add</button>*/}
+                <div className='desc-form' style={{minHeight:'120px', marginTop:'0px'}}>
+                    <div class='row'>
+                        <div class='column' style={{width:'80%'}}>
+                        <text className='input-text' style={{textAlign:'left', fontSize:'22px'}}>{sentences[itemId]}</text>
+                        {itemId < 3 ? <text className='input-text' style={{textAlign:'left', color:'#777777', fontSize:'22px'}}>{sentences[itemId+1]}</text>:<text></text>}
+                        </div>
+                        <div class='column' style={{width:'10%'}}>
+                        {
+                            itemId < 3 ? <button className='button-dark' type='button' onClick = {(e) => handleMerge(itemId)} style={{position: 'relative', left: '90%', top: '0px'}}>Merge</button> : <></>
+                        }
+
+                        {/*<button className='button-dark' type='button' onClick = {(e) => handleAdd(itemId)} style={{position: 'relative', left: '90%', top: '-10px'}}>Add</button>*/}
+                        </div>
                     </div>
                 </div>
-                </form>
-               <form className='inte-form' style={{marginTop:'30px', marginBottom:'120px'}}>
+               <div className='inte-form' style={{marginTop:'30px', marginBottom:'120px'}}>
                     <body>
                     <div class='row'>
-                        <div class='column' style={{width:'15%'}}>
-                        <label className='input-title'>Character.</label> 
-                        
+                        <div class='column' style={{width:'25%'}}>
+                            <label className='input-title'>Character.</label>
                         </div>
-
-                        <div class='column' style={{width:'10%'}}>
-                        {/*<label className='input-box' type='button' style={{width:'30px', height:'10px', backgroundColor:'#FFFFFF', padding:'2px', fontSize:'20px'}} > + </label>*/}
-                        <button style={{width:'30px', height: '28px', borderRadius:'15px', backgroundColor:'#777777', color:'#FFFFFF', padding:'2px', fontSize:'20px'}}>+</button>
-
-                        </div>
-                        <div class='column' style={{width:'75%'}}>
-                        <label className='input-title' style={{marginLeft:'60px'}}>Scene.</label>
+=                        <div class='column' style={{width:'75%'}}>
+                            <label className='input-title' style={{marginLeft:'60px'}}>Scene.</label>
                         </div>
                     </div>
 
@@ -123,58 +137,42 @@ const Interpretation = (props) => {
                     <textarea className='input-box-large' value={scenes[itemId]} style={{height:'100px'}} onChange={(e) => handleScenes(e.target.value, itemId)} rows='5' cols='50' placeholder='' id='scene' name='scene' />
                 */
                 }
-                </form>
+                </div>
             </div>
         );
     }
 
-    const CharCard1 = ({itemId, charId}) => {
-        return (
-            <div class='row'>
-                <div class='column' style={{width:'25%'}}>
-                <input className='input-box' value={chars[itemId][charId]} style={{width:'250px'}} onChange={(e) => handleChars(e.target.value, itemId, charId)} type='text' placeholder='' id='char' name='char' />
-                </div>
-                <div class='column' style={{width:'75%'}}>
-                <input className='input-box' value={acts[itemId][charId]} style={{marginLeft:'60px', width:'700px'}} onChange={(e) => handleActs(e.target.value, itemId, charId)} type='text' placeholder='' id='act' name='act' />
-                </div>
-            </div>
-        )
-    }
-
     const CharCard = ({itemId, chars}) => {
         return (
-            <div class='row'>
-                <div class='column' style={{width:'25%'}}>
-            {
-                chars[0]!==''?<input className='input-box' value={chars[0]} style={{width:'250px'}} onChange={(e) => handleChars(e.target.value, itemId, 0)} type='text' placeholder='' id='char' name='char' />:<input className='input-box' style={{width:'250px', backgroundColor: 'rgba(0,0,0,0)', border:'None',}} />
-            }
-             {   chars.length>1?<input className='input-box' value={chars[1]} style={{width:'250px'}} onChange={(e) => handleChars(e.target.value, itemId, 0)} type='text' placeholder='' id='char' name='char' />:<div />
-             }
-                
-
-                
-                
+            <div className='row'>
+                <div className='column' style={{width: '25%'}}>
+                    {chars.map((character)=>(
+                        <div className='charWithPic pointer' onClick={()=>{mapping(character)}}>
+                            <img className='icon' src={profile}/>
+                            <p className='input-box'>{character}</p>
+                        </div>
+                    ))}
                 </div>
-                <div class='column' style={{width:'75%'}}>
-                <textarea className='input-box-large' value={acts[itemId]} rows='5' cols='50' style={{marginLeft:'60px', width:'700px', height:'127px'}} onChange={(e) => handleActs(e.target.value, itemId, 0)} type='text' placeholder='' id='act' name='act' />
+                <div className='column' style={{width: '60%'}}>
+                    <textarea className='input-box-large' value={acts[itemId]} rows='5' cols='50'
+                              style={{marginLeft: '60px', width: '100%', height: '127px'}}
+                              onChange={(e) => handleActs(e.target.value, itemId, 0)} type='text' placeholder=''
+                              id='act' name='act'/>
                 </div>
             </div>
         )
     }
 
     return (
-        <div className='input-container' style={{textAlign:'left'}} onSubmit={handleSubmit}>
-            <div className='header' style={{position:'fixed', width:'1100px'}} >
-                <label className='h3-light'>Information and relationship interpretation.</label>
-                <button className='button-dark' type='submit' onClick={() => navigate("/description")} style={{position: 'relative', left: '70px', top: '120px'}}>Back</button>
-                <button className='button-dark' type='submit' onClick={() => navigate("/sound")} style={{position: 'relative', left: '70px', top: '120px', marginLeft:'30px'}}>Save</button>
-            </div>
-
-            <div class='row' style={{height:'550px', width:'1100px', marginTop:'20%', paddingTop:'-200px', marginBottom:'10%', overflow:'scroll'}}>
+        <div className='input-container' onSubmit={handleSubmit}>
+            <div class='row' style={{height:'550px', width:'1200px', marginTop:'20%', paddingTop:'-200px', marginBottom:'10%', overflow:'scroll'}}>
                 {scenes.map((item, index) => (
                     <div>{SceneCard( {itemId:index}) }</div>
                 ))}
             </div>
+            {
+                isMapping&&<div style={{width: '100%', display:'flex', justifyContent: 'center', alignItems: 'center', position: 'absolute', left: '0', top:'0'}}><Character></Character></div>
+            }
         </div>
     );
 };
@@ -193,7 +191,7 @@ const Interpretation = (props) => {
         <div className='input-container' style={{textAlign:'left'}}>
             <label className='h3-light'>Information and relationship interpretation.</label>
             <button className='button-light' type='submit' style={{position: 'relative', left: '70px', top: '120px'}}>Save</button>
-            
+
             <form className='desc-form' onSubmit={handleSubmit}>
                 <text className='input-text' style={{textAlign:'left'}}>{sentence}</text>
                 <button className='button-dark' style={{position: 'relative', left: '85%', top: '-35px'}}>Merge</button>
@@ -214,7 +212,7 @@ const Interpretation = (props) => {
                 </body>
                 <label className='input-title' style={{marginTop:'20px'}}>Scene.</label>
                 <textarea className='input-box-large' value={scene} style={{height:'100px'}} onChange={e => setScene(e.target.value.replace('\\n', '\n'))} rows='5' cols='50' placeholder='' id='scene' name='scene' />
-                
+
             </form>
         </div>
     );
