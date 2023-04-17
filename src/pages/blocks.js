@@ -7,14 +7,7 @@ const Blocks = () => {
     const navigate = useNavigate();
 
     const storys = [
-        {
-            title: 'Have breakfast',
-            content: 'I have breakfast with my father yesterday morning, and I like the food I eat.'
-        },
-        {
-            title: 'Have dinner',
-            content: 'I have dinner with my father yesterday morning, and I like the food I eat.'
-        }
+
     ]
 
     const position = [
@@ -58,6 +51,7 @@ const Blocks = () => {
                 {
                     position.map((pos, index)=>(
                         <div
+                            key={index}
                             className='pink-block'
                             style={{position:'absolute', left: pos.left, top: pos.top}}
                             onClick={()=>{

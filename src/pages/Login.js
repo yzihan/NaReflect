@@ -26,10 +26,10 @@ const Login = (props) => {
                 console.log(response)
                 window.sessionStorage.setItem('user_name', user);
                 window.sessionStorage.setItem('user_id', response.id);
-                window.sessionStorage.setItem('title', '');
-                window.sessionStorage.setItem('style', 'real photo high resolution');
-                window.sessionStorage.setItem('desc', '');
-                navigate('/theme');
+                window.sessionStorage.setItem('dream_title', '');
+                window.sessionStorage.setItem('dream_style', 'real photo high resolution');
+                window.sessionStorage.setItem('dream_desc', '');
+                navigate('/blocks');
             }
           })
     }
@@ -43,11 +43,11 @@ const Login = (props) => {
                     <label className='hspace'></label>
                     <button className='h2-dark' type="button" onClick={() => navigate("/register")}>Register</button>
                 </div>
-                <input className='input-box' value={user} onChange={e => setUser(e.target.value)} placeholder='User ID' id='user' name='user' />
+                <input className='input-box' value={user} onChange={e => setUser(e.target.value)} placeholder='User ID' id='name' name='name' />
                 <input className='input-box' value={pass} onChange={e => setPass(e.target.value)} type='password' placeholder='Keywords' id='password' name='password' />
                 <label className='vspace'> </label>
                 <label className='vspace'> </label>
-                <button className='button-dark' type='submit'>Start</button>
+                <button className='button-dark' type='submit' style={{position:'relative', left:'30%'}}>Start</button>
             </form>
         </div>
     );

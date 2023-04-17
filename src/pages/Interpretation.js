@@ -1,163 +1,139 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useState } from "react";
 import profile from '../components/profile.png';
-import Character from "./characters";
+import NoticeBar from "../components/noticeBar";
+import {scene_prompt} from "../prompts/generate sentence";
 
 
+const Interpretation = () => {
 
-const Interpretation = (props) => {
-    //const [items] = React.useState(getItems);
-    //const scenes = ['scene1','s2','s3','s4']
+    const [data, setData] = useState(JSON.parse(window.localStorage.getItem('data')))
 
-    const [isMapping, setMapping] = useState(false)
-
-    const mapping = ()=>{
-        setMapping(true)
-    }
-
-    const newChars = [];
-    const initChars = JSON.parse(window.sessionStorage.getItem('chars'));
-    for (let i=0;i<initChars.length;i++) {
-        var char = initChars[i].split('; ');
-        newChars.push(char.map((s,i) => {return s;}));
-    }
-
-    const newActs = [];
-    var initActs = JSON.parse(window.sessionStorage.getItem('acts'));
-    for (let i=0;i<initActs.length;i++) {
-        var act = initActs[i].split('; ');
-        newActs.push(act);
-    }
-
-    const [sentences, setSentences] = useState(JSON.parse(window.sessionStorage.getItem('sentences')));
-    const [chars, setChars] = useState(newChars);
-    const [scenes, setScenes] = useState(JSON.parse(window.sessionStorage.getItem('scenes')));
-    const [acts, setActs] = useState(newActs);
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        alert('output'+e);
-    }
-    function handleMerge(itemId) {
-
-        if(itemId==chars.length-1){
-            return
+    const handleSubmit = ()=>{}
+    const handleMerge = (itemId)=>{
+        console.log(itemId)
+        let newData = []
+        newData = [...data]
+        newData[itemId]['sentence'] = newData[itemId]['sentence'] + newData[itemId+1]['sentence']
+        for(let addingCharacter of newData[itemId+1]['characters']){
+            let flag = true
+            for(let existingCharacter of newData[itemId]['characters']){
+                if(addingCharacter.name===existingCharacter.name){
+                    flag = false
+                    break
+                }
+            }
+            if(flag){
+                newData[itemId]['characters'].push(addingCharacter)
+            }
         }
-
-        const newChars = chars
-        for(let character of chars[itemId+1]){
-            newChars[itemId].push(character)
-        }
-        newChars.splice(itemId+1, 1);
-        setChars(newChars)
-
-        const newActs = acts.map((s,i) => {if(i===itemId){return s+' '+acts[i+1];}else{return s;}});
-        newActs.splice(itemId+1, 1);
-        setActs(newActs);
-
-        scenes.splice(itemId+1, 1);
-        const newSentences = sentences.map((s,i) => {if(i===itemId){return s+' '+sentences[i+1];}else{return s;}});
-        newSentences.splice(itemId+1, 1);
-        setSentences(newSentences);
-    }
-    function handleAdd(itemId) {
-        chars.splice(itemId, 0, ['']);
-        acts.splice(itemId, 0, ['']);
-        scenes.splice(itemId, 0, '');
-        sentences.splice(itemId, 0, '');
+        newData.splice(itemId+1,1)
+        console.log(newData)
+        setData([...newData])
     }
 
-    function handleScenes(e, itemId) {
-        const newScenes = scenes.map((s,i) => {if(i===itemId){return e;}else{return s;}});
-        setScenes(newScenes);
-    }
-    function handleChars(e, itemId, charId) {
-        const newChars = [];
-        for (let i=0;i<scenes.length;i++) {
-            if (i === itemId) newChars.push( chars[i].map((s,i) => {if(i===charId){return e;}else{return s;}}));
-            else newChars.push( chars[i].map((s,i) => {return s;}));
-        }
-        setChars(newChars);
-        //alert(chars[itemId][charId]);
-    }
-    function handleActs(e, itemId, charId) {
-        const newActs = [];
-        for (let i=0;i<scenes.length;i++) {
-            if (i === itemId) newActs.push( acts[i].map((s,i) => {if(i===charId){return e;}else{return s;}}));
-            else newActs.push( acts[i].map((s,i) => {return s;}));
-        }
-        setActs(newActs);
+    const generate = (itemId)=>{
+        let newData = [...data]
+        const modelUrl = 'https://api.openai.com/v1/completions'
+        fetch(modelUrl,{
+            method:'POST',
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "*",
+                "Authorization": "Bearer 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",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "model": "text-davinci-003",
+                "max_tokens": 2048,
+                "temperature": 0,
+                "top_p": 1,
+                "n": 1,
+                "stream": false,
+                "logprobs": null,
+                "prompt": scene_prompt + data[itemId]['sentence']
+            })
+        })
+            .then(response => response.json())
+            .then(res=>{
+                console.log(res)
+                newData[itemId]['scene'] = res.choices[0].text.slice(2)
+                newData[itemId]['generated']= true
+                setData([...newData])
+            })
+
     }
 
-    const SceneCard = ({itemId}) => {
-        //alert('id:'+id.target);
-        //const itemId = '0';
+    const handleScene = (value,itemId)=>{
+        let newData = [...data]
+        newData[itemId]['scene'] = value
+        setData([...newData])
+    }
+
+    const next = ()=>{
+        window.localStorage.setItem('data', JSON.stringify(data))
+        navigate('/generatedStyle')
+    }
+    const Panel = ({itemId}) => {
 
         return (
-            <div style={{width:'10%'}}>
+            <div>
                 <div className='desc-form' style={{minHeight:'120px', marginTop:'0px'}}>
-                    <div class='row'>
-                        <div class='column' style={{width:'80%'}}>
-                        <text className='input-text' style={{textAlign:'left', fontSize:'22px'}}>{sentences[itemId]}</text>
-                        {itemId < 3 ? <text className='input-text' style={{textAlign:'left', color:'#777777', fontSize:'22px'}}>{sentences[itemId+1]}</text>:<text></text>}
+                    <div className='row'>
+                        <div className='column' style={{width:'80%'}}>
+                            <p className='input-text' style={{textAlign:'left', fontSize:'22px'}}>{data[itemId]['sentence']}</p>
+                            {
+                                itemId<data.size-1&&<p className='input-text' style={{textAlign:'left', color:'#777777', fontSize:'22px'}}>{data[itemId+1]['sentence']}</p>
+                            }
                         </div>
-                        <div class='column' style={{width:'10%'}}>
-                        {
-                            itemId < 3 ? <button className='button-dark' type='button' onClick = {(e) => handleMerge(itemId)} style={{position: 'relative', left: '90%', top: '0px'}}>Merge</button> : <></>
-                        }
-
-                        {/*<button className='button-dark' type='button' onClick = {(e) => handleAdd(itemId)} style={{position: 'relative', left: '90%', top: '-10px'}}>Add</button>*/}
+                        <div className='column' style={{width:'10%'}}>
+                            <button className='button-dark' type='button' onClick = {(e) => handleMerge(itemId)} style={{position: 'relative', left: '90%', top: '0px'}}>Merge</button>
                         </div>
                     </div>
                 </div>
-               <div className='inte-form' style={{marginTop:'30px', marginBottom:'120px'}}>
-                    <body>
-                    <div class='row'>
-                        <div class='column' style={{width:'25%'}}>
-                            <label className='input-title'>Character.</label>
+                <div className='inte-form' style={{marginTop:'30px', marginBottom:'120px'}}>
+                    <div className='row'>
+                        <div className='column' style={{width:'25%'}}>
+                            <p className='input-title'>Character.</p>
                         </div>
-=                        <div class='column' style={{width:'75%'}}>
-                            <label className='input-title' style={{marginLeft:'60px'}}>Scene.</label>
+                        <div className='column' style={{width:'75%'}}>
+                            <p className='input-title' style={{marginLeft:'60px'}}>Scene.
+                                <span style={{fontSize:'smaller'}}> <br/> Feel free to add more details for better picture generation performance.</span>
+                            </p>
                         </div>
                     </div>
-
-                    {
-                        <div>{CharCard({itemId:itemId, chars:chars[itemId]})} </div>
-                    /*
-                    chars[itemId].map((char, index) => (
-                        <div>{CharCard({itemId:itemId,charId:index})} </div>
-                    ))
-                    */
-                    }
-                    </body>
-                    {
-                /*
-                    <label className='input-title' style={{marginTop:'10px'}}>Scene.</label>
-                    <textarea className='input-box-large' value={scenes[itemId]} style={{height:'100px'}} onChange={(e) => handleScenes(e.target.value, itemId)} rows='5' cols='50' placeholder='' id='scene' name='scene' />
-                */
-                }
+                    <div>
+                        {Card({itemId:itemId})}
+                    </div>
                 </div>
             </div>
         );
     }
 
-    const CharCard = ({itemId, chars}) => {
+    const Card = ({itemId}) => {
+
+
         return (
             <div className='row'>
                 <div className='column' style={{width: '25%'}}>
-                    {chars.map((character)=>(
-                        <div className='charWithPic pointer' onClick={()=>{mapping(character)}}>
-                            <img className='icon' src={profile}/>
-                            <p className='input-box'>{character}</p>
+                    {data[itemId]['characters'].map((character, index)=>(
+                        <div className='charWithPic' key={index}>
+                            <img className='image-box' style={{objectFit:'cover', objectPosition:'0% 0%'}} src={character.src}/>
+                            <p className='input-box'>{character.name}</p>
                         </div>
                     ))}
                 </div>
                 <div className='column' style={{width: '60%'}}>
-                    <textarea className='input-box-large' value={acts[itemId]} rows='5' cols='50'
-                              style={{marginLeft: '60px', width: '100%', height: '127px'}}
-                              onChange={(e) => handleActs(e.target.value, itemId, 0)} type='text' placeholder=''
-                              id='act' name='act'/>
+
+                    {
+                        data[itemId]['generated']?<textarea className='input-box-large' value={data[itemId]['scene']} rows='5' cols='50'
+                                                             style={{marginLeft: '60px', width: '100%', height: '127px'}}
+                                                             onChange={(e) => handleScene(e.target.value, itemId)} type='text'/>
+                            :
+                            <button className='button-dark' style={{marginLeft:'60px'}} onClick={()=>{generate(itemId)}}>generate</button>
+                    }
                 </div>
             </div>
         )
@@ -165,60 +141,16 @@ const Interpretation = (props) => {
 
     return (
         <div className='input-container' onSubmit={handleSubmit}>
-            <div class='row' style={{height:'550px', width:'1200px', marginTop:'20%', paddingTop:'-200px', marginBottom:'10%', overflow:'scroll'}}>
-                {scenes.map((item, index) => (
-                    <div>{SceneCard( {itemId:index}) }</div>
+            <NoticeBar content='Please describe your experience'></NoticeBar>
+            <div className='row' style={{height:'550px', width:'1200px', marginTop:'20%', paddingTop:'-200px', marginBottom:'10%', overflow:'scroll'}}>
+                {data.map((edge, index) => (
+                    <div key={index}>{Panel( {itemId:index}) }</div>
                 ))}
             </div>
-            {
-                isMapping&&<div style={{width: '100%', display:'flex', justifyContent: 'center', alignItems: 'center', position: 'absolute', left: '0', top:'0'}}><Character></Character></div>
-            }
+            <button  className='button-dark' style={{position:'fixed', right:'20%', bottom:'50px'}} onClick={next}>NEXT</button>
         </div>
     );
 };
-/*
-<div style={{ width: "100%", overflow: "auto", display: "flex" }}>
-            {map(range(4), idx => (
-                <Container itemId={idx} />
-            ))}
-        </div>
-        */
-
-
-//<SceneCard itemId={index} /> <SceneCard itemId='0' chars={chars} acts={acts} scenes={scenes}/>
-/*
-    return (
-        <div className='input-container' style={{textAlign:'left'}}>
-            <label className='h3-light'>Information and relationship interpretation.</label>
-            <button className='button-light' type='submit' style={{position: 'relative', left: '70px', top: '120px'}}>Save</button>
-
-            <form className='desc-form' onSubmit={handleSubmit}>
-                <text className='input-text' style={{textAlign:'left'}}>{sentence}</text>
-                <button className='button-dark' style={{position: 'relative', left: '85%', top: '-35px'}}>Merge</button>
-            </form>
-
-            <form className='inte-form'>
-                <body>
-                <div class='row'>
-                    <div class='column' style={{width:'30%'}}>
-                    <label className='input-title'>Character.</label>
-                    <input className='input-box' value={char} style={{width:'300px'}} onChange={e => setChar(e.target.value)} type='text' placeholder='' id='char' name='char' />
-                    </div>
-                    <div class='column' style={{width:'70%'}}>
-                    <label className='input-title' style={{marginLeft:'60px'}}>Action.</label>
-                    <input className='input-box' value={act} style={{marginLeft:'60px', width:'630px'}} onChange={e => setAct(e.target.value)} type='text' placeholder='' id='act' name='act' />
-                    </div>
-                </div>
-                </body>
-                <label className='input-title' style={{marginTop:'20px'}}>Scene.</label>
-                <textarea className='input-box-large' value={scene} style={{height:'100px'}} onChange={e => setScene(e.target.value.replace('\\n', '\n'))} rows='5' cols='50' placeholder='' id='scene' name='scene' />
-
-            </form>
-        </div>
-    );
-};
-*/
-
 
 
 export default Interpretation;

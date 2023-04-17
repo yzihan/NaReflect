@@ -20,7 +20,7 @@ const Description = (props) => {
                 "Access-Control-Allow-Methods": "*",
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({'user':'tester',
+            body: JSON.stringify({'user':window.sessionStorage.getItem('user_name'),
                 'title':title, 'style':style, 'desc':desc})
           })
           .then(response => response.json())
@@ -103,8 +103,8 @@ const Description = (props) => {
                 <label className='input-title' style={{marginTop:'20px'}}>Dream Description.</label>
                 <label className='input-text' style={{marginTop:'5px', marginBottom:'5px', color:'#404040'}}>Please specify the name of each character, and seperate each sense using '.'</label>
                 <textarea className='input-box-large' value={desc} onChange={e => setDesc(e.target.value.replace('\\n', '\n'))} rows='5' cols='50' placeholder='' id='desc' name='desc' />
-                {//<button className='button-dark' type='submit' style={{position: 'relative', left: '85%', top: '-90px'}}>Save</button>
-                }
+                <button className='button-dark' type='submit'>Save</button>
+
             </form>
         </div>
     );

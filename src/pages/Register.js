@@ -30,10 +30,10 @@ const Register = (props) => {
                 console.log(response)
                 window.sessionStorage.setItem('user_name', user);
                 window.sessionStorage.setItem('user_id', response.id);
-                window.sessionStorage.setItem('title', '');
-                window.sessionStorage.setItem('style', 'real photo high resolution');
-                window.sessionStorage.setItem('desc', '');
-                navigate('/account');
+                window.sessionStorage.setItem('dream_title', '');
+                window.sessionStorage.setItem('dream_style', 'real photo high resolution');
+                window.sessionStorage.setItem('dream_desc', '');
+                navigate('/blocks');
             }
           })
     }

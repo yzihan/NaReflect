@@ -10,14 +10,15 @@ import map from "lodash/map";
 import range from "lodash/range";
 import {ScrollBox, ScrollAxes, FastTrack} from 'react-scroll-box';
 import edit from '../components/pencil.png';
+import video from '../components/video.png';
 import man from '../components/man.jpg';
 import connect_config from "../config.json";
 
 
 const Character = () => {
     const items=['Item 1', 'Item 2', 'Item 3'];
-    const titles = ['Party', 'No bustle', 'Bitten'];
-    const descriptions = ['I find myself on a beach, with many beachfront mansions nearby. My friends and I decide we ...',
+    const dream_titles = ['Party', 'No bustle', 'Bitten'];
+    const dream_descriptions = ['I find myself on a beach, with many beachfront mansions nearby. My friends and I decide we ...',
                                 'In my dream, as usual, I woke up early. I had breakfast. I came out of the door with ...',
                                 'It was like the zombie apocalypse but slower, calmer. Everyone was sequestered into ...'];
     const [names, setNames] = useState(['']);
@@ -151,20 +152,20 @@ const Character = () => {
     }
 
 
-    const Card = ({itemId}) => {
+    const DreamCard = ({itemId}) => {
         //alert('id:'+id.target);
         //const itemId = '0';
-        //alert(titles[itemId]);
+        //alert(dream_titles[itemId]);
 
         return (
             <div className='column' style={{minHeight:'60px', width:'30%', textAlign:'left',}}>
-                <div className='file' >
-                    <text className='input-title' style={{textAlign:'left'}}>{titles[itemId]}</text>
+                <div className='dream-file' >
+                    <text className='input-title' style={{textAlign:'left'}}>{dream_titles[itemId]}</text>
                     <div style={{width: '100%'}}>
                         <img src={edit} className='icon'/>
                         <img src={video} className='icon'/>
                     </div>
-                    <text className='input-text' style={{textAlign:'left', marginTop:'-15px', fontSize:'18px', color:'#777777', lineHeight:'115%'}}>{descriptions[itemId]}</text>
+                    <text className='input-text' style={{textAlign:'left', marginTop:'-15px', fontSize:'18px', color:'#777777', lineHeight:'115%'}}>{dream_descriptions[itemId]}</text>
                 </div>
             </div>
         );
@@ -173,7 +174,7 @@ const Character = () => {
     const CharCard = ({itemId}) => {
         return (
             <div class='row' style={{textAlign:'center', }}>
-                <form className='file' style={{height:'110px', width:'110px'}}>
+                <form className='dream-file' style={{height:'110px', width:'110px'}}>
                 </form>
                 <text className='input-title' style={{color:'#FFFFFF'}}>Char {itemId}</text>
             </div>

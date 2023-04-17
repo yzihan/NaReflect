@@ -6,6 +6,7 @@ html {
   display: flex;
   width: 100%;
   height:100%;
+  background-image: url('./components/background.png');
   background-size: cover;
   background-position: top;
   min-height: 100vh;
@@ -53,21 +54,22 @@ html {
   text-align: center;
   display: flex;
   flex-direction: column;
-  background-color: #FDB5B5;
+  background-color: rgb(221 179 179 / 50%);
   border-radius: 40px;
   padding: 4rem;
-  margin-top:20px;
+  margin-top:80px;
 }
 
 .desc-form, .inte-form {
   text-align: center;
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 0.5);
+  background: rgb(221 179 179 / 90%);
   border-radius: 40px;
   padding: 2rem;
   width: 1100px;
   margin-top: 160px;
+  box-shadow: 0px 5px 5px rgba(196, 140, 140, 0.9), 0px 5px 5px rgba(196, 140, 140, 0.9), 0px 5px 5px rgba(196, 140, 140, 0.9);
 }
 
 .desc-form-extend{
@@ -75,7 +77,7 @@ html {
   justify-content: space-around;
 }
 
-.file{
+.dream-file{
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -93,11 +95,11 @@ html {
   text-align: center;
   display: flex;
   flex-direction: column;
-  background: rgba(255, 255, 255, 1.0);
+  background: rgba(255, 255, 255, 0);
   border-radius: 15px;
-  width: 110px;
-  height: 110px;
-  margin: 20px;
+  width: 80px;
+  height: 80px;
+  margin: 10px;
   padding: 0px;
 }
 .login-form, .register-form {
@@ -140,8 +142,8 @@ html {
 }
 .input-title {
   font-size: 24px;
-  color: #000000;
-  margin-left: 10px;
+  color: rgba(0, 0, 0, 0.6);
+  font-weight: bold;
 }
 .input-text {
   font-size: 20px;
@@ -173,6 +175,8 @@ html {
 .input-box {
   width: 300px;
   height: 55px;
+  outline: none;
+  border: none;
 }
 .input-box-large {
   width: 1000px;
@@ -223,14 +227,14 @@ html {
 }
 .tag-dark{
   width: auto;
-  height: 60px;
+  height: 50px;
   opacity: 1.0;
   border-radius: 15px;
   border: None;
   font-size: 26px;
   text-align: center;
   margin: 10px;
-  background: #A6A6B3;
+  background: #757595b8;
   color: #FFFFFF;
   opacity:0.9;
   padding:10px 20px 10px 20px;
@@ -289,9 +293,9 @@ button {
   width: 717px;
   height: 82px;
   right: 0;
-  top: 53px;
+  top: 3px;
   background: #E3DDEA;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 4px 4px rgb(71 90 189 / 25%), 0px 4px 4px rgb(71 90 189 / 25%), 0px 4px 4px rgb(71 90 189 / 25%);
   border-radius: 15px;
 }
 .NoticeBar > p{
@@ -303,10 +307,11 @@ button {
   text-align: center;
   letter-spacing: -0.02em;
   color: #000000;
+  margin: 20px 0;
 }
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 1px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-thumb {
   border-radius: 20px;
@@ -328,9 +333,6 @@ button {
 .charWithPic{
   display: flex;
   align-items: center;
-}
-.charWithPic:hover{
-  cursor: pointer;
 }
 .checkBtn:hover{
   cursor: pointer;
@@ -388,4 +390,37 @@ button {
   letter-spacing: -0.02em;
 
   color: #000000;
+}
+.vis-manipulation{
+  position: fixed;
+  top: 500px;
+  left:20vw;
+  width: 500px;
+  height: 100px;
+  background-color: rgba(229, 229, 229, 0.65);
+  font-family: 'Zen Old Mincho';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  border-radius: 10px;
+}
+.vis-label{
+  font-family: 'Zen Old Mincho';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  cursor: pointer;
+}
+input:-internal-autofill-selected {
+  -webkit-text-fill-color: #FFFFFF00 !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+  color: #2C2C2C !important;
+}
+.graph-bg{
+  background-color: rgb(221 179 179 / 50%);
+  border-radius: 40px;
+  margin-top: 40px;
+}
+.vis-none{
+  padding: 6px;
 }
